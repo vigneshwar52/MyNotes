@@ -55,6 +55,8 @@ public class NotesEditorActivity extends AppCompatActivity {
                 notes.setDescription(desc);
                 notes.setDate(formatter.format(date));
 
+                //notes.setDate(String.valueOf(date));
+
                 Intent intent = new Intent();
                 intent.putExtra("notes",notes);
 
