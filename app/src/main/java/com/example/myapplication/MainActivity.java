@@ -3,12 +3,15 @@ package com.example.myapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
@@ -27,7 +30,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
 
     RecyclerView recyclerView;
     NotesListAdapter notesListAdapter;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     RoomDB database;
     FloatingActionButton fab;
     SearchView searchView;
+    Notes selectedNote;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,7 +125,34 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onLongClick(Notes notes, CardView cardView) {
-
+            selectedNote = new Notes();
+            selectedNote = notes;
+            showPopup(cardView);
         }
     };
+
+    private void showPopup(CardView cardView) {
+        PopupMenu popupMenu = new PopupMenu(this,cardView);
+        popupMenu.setOnMenuItemClickListener(this);
+        popupMenu.inflate(R.menu.popup_menu);
+        popupMenu.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+      if(item.getItemId() == R.id.pin){
+                if (selectedNote.isPinned()) {
+                    database.mainDAObj().pin(selectedNote.getID(), false);
+                    Toast.makeText(MainActivity.this, "unpinned!", Toast.LENGTH_SHORT);
+                } else {
+                    database.mainDAObj().pin(selectedNote.getID(), true);
+                    Toast.makeText(MainActivity.this, "pinned!", Toast.LENGTH_SHORT);
+                }
+                notesList.clear();
+                notesList.addAll(database.mainDAObj().getAll());
+                notesListAdapter.notifyDataSetChanged();
+                return true;
+        }
+        return false;
+    }
 }
