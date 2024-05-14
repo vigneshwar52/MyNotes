@@ -1,5 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
+    <color name="button_color">#FFFFFF</color>
+    <!-- White for dark theme -->
     <style name="Base.Theme.MyApplication" parent="Theme.Material3.DayNight">
         <item name="colorPrimary">@color/orange</item>
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->

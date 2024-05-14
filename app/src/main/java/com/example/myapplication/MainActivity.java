@@ -143,16 +143,22 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
       if(item.getItemId() == R.id.pin){
                 if (selectedNote.isPinned()) {
                     database.mainDAObj().pin(selectedNote.getID(), false);
-                    Toast.makeText(MainActivity.this, "unpinned!", Toast.LENGTH_SHORT);
+                    Toast.makeText(MainActivity.this, "unpinned!", Toast.LENGTH_SHORT).show();
                 } else {
                     database.mainDAObj().pin(selectedNote.getID(), true);
-                    Toast.makeText(MainActivity.this, "pinned!", Toast.LENGTH_SHORT);
+                    Toast.makeText(MainActivity.this, "pinned!", Toast.LENGTH_SHORT).show();
                 }
                 notesList.clear();
                 notesList.addAll(database.mainDAObj().getAll());
                 notesListAdapter.notifyDataSetChanged();
                 return true;
         }
-        return false;
+      else{
+          database.mainDAObj().delete(selectedNote);
+          Toast.makeText(MainActivity.this, "Note Deleted!", Toast.LENGTH_SHORT).show();
+          notesList.remove(selectedNote);
+          notesListAdapter.notifyDataSetChanged();
+          return true;
+      }
     }
 }
