@@ -7,11 +7,10 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.example.myapplication.Models.Notes;
-import com.example.myapplication.R;
 
 @Database(entities =
         Notes.class,
-        version =1,
+        version =2,
         exportSchema = false)
 
 public abstract class RoomDB extends RoomDatabase {

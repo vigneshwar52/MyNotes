@@ -52,11 +52,12 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesViewHolder> {
         else{
             holder.imgView_pin.setImageResource(0);
         }
+        holder.notesContainer.setBackgroundColor(list.get(position).getColor());
 
-        int colorCode = getRandomColor();
+      //  int colorCode = getRandomColor();
 
         //onClick
-        holder.notesContainer.setCardBackgroundColor(holder.itemView.getResources().getColor(colorCode, null));
+      //  holder.notesContainer.setCardBackgroundColor(holder.itemView.getResources().getColor(colorCode, null));
         holder.notesContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,21 +73,6 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesViewHolder> {
                 return true;
             }
         });
-    }
-
-    private int getRandomColor() {
-        List<Integer> colorCode = new ArrayList<>();
-        colorCode.add(R.color.lightgreen);
-        colorCode.add(R.color.lightgrey);
-        colorCode.add(R.color.violet);
-        colorCode.add(R.color.blue);
-        colorCode.add(R.color.green);
-        colorCode.add(R.color.grey);
-
-
-        Random random = new Random();
-        int randomColor = random.nextInt(colorCode.size());
-        return colorCode.get(randomColor);
     }
 
     @Override

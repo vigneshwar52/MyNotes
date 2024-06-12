@@ -22,6 +22,27 @@ public class Notes implements Serializable {
 
    @ColumnInfo(name = "pinned")
    boolean pinned = false;
+   private int color;
+
+   public Notes(){
+
+   }
+    public Notes(int ID, String title, String description, String date, boolean pinned, int color) {
+        this.ID = ID;
+        this.title = title;
+        this.description = description;
+        this.date = date;
+        this.pinned = pinned;
+        this.color = color;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
 
     public int getID() {
         return ID;

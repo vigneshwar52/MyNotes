@@ -6,27 +6,18 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView;
 import androidx.cardview.widget.CardView;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import com.example.myapplication.Adapters.NotesListAdapter;
 import com.example.myapplication.Database.RoomDB;
 import com.example.myapplication.Models.Notes;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,10 +30,14 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     FloatingActionButton fab;
     SearchView searchView;
     Notes selectedNote;
+
+    List<Notes> filterNotesList;
+
+    private static final int NOTESEDITORNEW = 0x01;
+    private static final int NOTESEDITORUPDATE = 0x02;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
         recyclerView = findViewById(R.id.recyclerHome);
@@ -53,13 +48,14 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         database = RoomDB.getInstance(this);
 
         notesList = database.mainDAObj().getAll();
+
         updateRecycler(notesList);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,NotesEditorActivity.class);
-                startActivityForResult(intent,101);
+                startActivityForResult(intent,NOTESEDITORNEW);
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -74,10 +70,22 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 return true;
             }
         });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                clearFilterAndUpdateData();
+                return false;
+            }
+        });
+    }
+
+    private void clearFilterAndUpdateData() {
+        filterNotesList.clear();
+        updateRecycler(notesList);
     }
 
     private void filter(String newText) {
-        List<Notes> filterNotesList = new ArrayList<>();
+        filterNotesList = new ArrayList<>();
         for(Notes singleNote:notesList){
             if(singleNote.getTitle().toLowerCase().contains(newText.toLowerCase())||singleNote.getDescription().toLowerCase().contains(newText.toLowerCase())){
                 filterNotesList.add(singleNote);
@@ -90,15 +98,16 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 101){
+        if(requestCode == NOTESEDITORNEW){
             if(resultCode == Activity.RESULT_OK){
                 Notes newNotes = (Notes) data.getSerializableExtra("notes");
                 database.mainDAObj().insert(newNotes);
-                notesList.clear();
-                notesList.addAll(database.mainDAObj().getAll());
+                //notesList.clear();
+                //notesList.addAll(database.mainDAObj().getAll());
+                notesList.add(newNotes);
                 notesListAdapter.notifyDataSetChanged();
             }
-        } else if (requestCode == 102) {
+        } else if (requestCode == NOTESEDITORUPDATE) {
             if(resultCode == Activity.RESULT_OK) {
                 Notes newNotes = (Notes) data.getSerializableExtra("notes");
                 database.mainDAObj().update(newNotes.getID(),newNotes.getTitle(),newNotes.getDescription());
@@ -120,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         public void onClick(Notes notes) {
             Intent intent = new Intent(MainActivity.this,NotesEditorActivity.class);
             intent.putExtra("old_data",notes);
-            startActivityForResult(intent,102);
+            startActivityForResult(intent,NOTESEDITORUPDATE);
         }
 
         @Override
