@@ -58,7 +58,7 @@
             android:textSize="15sp"
             android:maxLines="10"
             android:padding="8dp"
-            android:text="descriptions"
+            android:text="date"
             android:singleLine="true"
             android:ellipsize="marquee"
             android:marqueeRepeatLimit="marquee_forever"/>

@@ -47,13 +47,15 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesViewHolder> {
         holder.tvDate.setSelected(true);
 
         if (list.get(position).isPinned()) {
-            holder.fab_btn.setImageResource(R.drawable.pin);
+            holder.imgView_pin.setImageResource(R.drawable.pin);
         }
-//        else{
-//            holder.fab_btn.setImageResource(0);
-//        }
+        else{
+            holder.imgView_pin.setImageResource(0);
+        }
 
         int colorCode = getRandomColor();
+
+        //onClick
         holder.notesContainer.setCardBackgroundColor(holder.itemView.getResources().getColor(colorCode, null));
         holder.notesContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +63,8 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesViewHolder> {
                 listener.onClick(list.get(holder.getAdapterPosition()));
             }
         });
+
+        //onLong Click ---
         holder.notesContainer.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -78,6 +82,8 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesViewHolder> {
         colorCode.add(R.color.blue);
         colorCode.add(R.color.green);
         colorCode.add(R.color.grey);
+
+
         Random random = new Random();
         int randomColor = random.nextInt(colorCode.size());
         return colorCode.get(randomColor);
@@ -87,12 +93,17 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesViewHolder> {
     public int getItemCount() {
         return list.size();
     }
+
+    public void filterList(List<Notes> filteredList){
+        list = filteredList;
+        notifyDataSetChanged();
+    }
 }
 
 class NotesViewHolder extends RecyclerView.ViewHolder {
     CardView notesContainer;
     TextView tvTitle, tvDes, tvDate;
-    ImageView fab_btn;
+    ImageView fab_btn,imgView_pin;
 
     public NotesViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -102,5 +113,6 @@ class NotesViewHolder extends RecyclerView.ViewHolder {
         tvDes = itemView.findViewById(R.id.txtView_desc);
         tvDate = itemView.findViewById(R.id.txtView_date);
         fab_btn = itemView.findViewById(R.id.fab_btn);
+        imgView_pin = itemView.findViewById(R.id.imgView_pin);
     }
 }
