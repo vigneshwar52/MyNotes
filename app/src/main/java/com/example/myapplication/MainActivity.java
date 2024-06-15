@@ -78,6 +78,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             }
         });
     }
+    protected void onResume() {
+        updateRecycler(notesList);
+        super.onResume();
+    }
 
     private void clearFilterAndUpdateData() {
         filterNotesList.clear();
@@ -105,17 +109,17 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 //notesList.clear();
                 //notesList.addAll(database.mainDAObj().getAll());
                 notesList.add(newNotes);
-                notesListAdapter.notifyDataSetChanged();
             }
         } else if (requestCode == NOTESEDITORUPDATE) {
             if(resultCode == Activity.RESULT_OK) {
                 Notes newNotes = (Notes) data.getSerializableExtra("notes");
+                assert newNotes != null;
                 database.mainDAObj().update(newNotes.getID(),newNotes.getTitle(),newNotes.getDescription());
                 notesList.clear();
                 notesList.addAll(database.mainDAObj().getAll());
-                notesListAdapter.notifyDataSetChanged();
             }
         }
+        notesListAdapter.notifyDataSetChanged();
     }
 
     private void updateRecycler(List<Notes> notesList) {
@@ -161,8 +165,8 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 notesList.addAll(database.mainDAObj().getAll());
                 notesListAdapter.notifyDataSetChanged();
                 return true;
-        }
-      else{
+      }
+      else {
           database.mainDAObj().delete(selectedNote);
           Toast.makeText(MainActivity.this, "Note Deleted!", Toast.LENGTH_SHORT).show();
           notesList.remove(selectedNote);

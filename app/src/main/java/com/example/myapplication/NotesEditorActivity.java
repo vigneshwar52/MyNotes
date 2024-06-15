@@ -57,7 +57,7 @@ public class NotesEditorActivity extends AppCompatActivity {
                 String desc = editTextDesc.getText().toString().trim();
 
                 if(desc.isEmpty()){
-                    Toast.makeText(NotesEditorActivity.this,"please add some notes to save",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NotesEditorActivity.this,"please add some Description \n to save this note",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 SimpleDateFormat formatter = new SimpleDateFormat("EEE dd MM yyyy HH:mm:ss a");
