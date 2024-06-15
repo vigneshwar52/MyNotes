@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,8 @@ import com.example.myapplication.Models.Notes;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
+import java.util.Random;
 
 public class NotesEditorActivity extends AppCompatActivity {
 
@@ -45,7 +48,7 @@ public class NotesEditorActivity extends AppCompatActivity {
             editTextDesc.setText(notes.getDescription());
             isOldNote = true;
         }catch (Exception e){
-            Log.e("Exception in Notes Editor = ",e.getMessage());
+            Log.e("Exception in Notes Editor = ", Objects.requireNonNull(e.getMessage()));
         }
         imageViewSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +57,7 @@ public class NotesEditorActivity extends AppCompatActivity {
                 String desc = editTextDesc.getText().toString().trim();
 
                 if(desc.isEmpty()){
-                    Toast.makeText(NotesEditorActivity.this,"please add some notes to save",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NotesEditorActivity.this,"please add some Description \n to save this note",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 SimpleDateFormat formatter = new SimpleDateFormat("EEE dd MM yyyy HH:mm:ss a");
@@ -67,6 +70,11 @@ public class NotesEditorActivity extends AppCompatActivity {
                 notes.setTitle(title);
                 notes.setDescription(desc);
                 notes.setDate(formatter.format(date));
+
+                Random random = new Random();
+                int color = Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+                notes.setColor(color);
+
 
                 //notes.setDate(String.valueOf(date));
 
