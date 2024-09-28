@@ -3,28 +3,24 @@ package com.example.myapplication.Models;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
 import java.io.Serializable;
 
 @Entity(tableName = "notes")
 public class Notes implements Serializable {
-   @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = true)
     int ID = 0;
 
-   @ColumnInfo(name = "title")
+    @ColumnInfo()
     String title = "";
 
-   @ColumnInfo(name = "description")
-    String description="";
+    String description = "";
 
-   @ColumnInfo(name = "date")
     String date = "";
 
-   @ColumnInfo(name = "pinned")
-   boolean pinned = false;
-   private int color;
+    boolean pinned;
+    private int color;
 
-   public Notes(){
+    public Notes() {
 
    }
     public Notes(int ID, String title, String description, String date, boolean pinned, int color) {

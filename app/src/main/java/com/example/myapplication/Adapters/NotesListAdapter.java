@@ -1,6 +1,7 @@
 package com.example.myapplication.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesViewHolder> {
     List<Notes> list;
     NotesOnClickListener listener;
 
+    private String TAG = NotesListAdapter.class.getSimpleName();
+
     public NotesListAdapter(Context context, List<Notes> list, NotesOnClickListener listener) {
         this.context = context;
         this.listener = listener;
@@ -46,11 +49,16 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesViewHolder> {
         holder.tvDate.setText(list.get(position).getDate());
         holder.tvDate.setSelected(true);
 
-        if (list.get(position).isPinned()) {
+        boolean isContainerPinned = list.get(position).isPinned();
+        if (isContainerPinned) {
+
+            Log.d(TAG, "onBindViewHolder: if : "+ isContainerPinned);
+            holder.imgView_pin.setVisibility(View.VISIBLE);
             holder.imgView_pin.setImageResource(R.drawable.pin);
         }
         else{
-            holder.imgView_pin.setImageResource(0);
+            Log.d(TAG, "onBindViewHolder: else : "+ isContainerPinned);
+            holder.imgView_pin.setVisibility(View.INVISIBLE);
         }
 
         holder.notesContainer.setCardBackgroundColor(list.get(position).getColor());
