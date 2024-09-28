@@ -7,12 +7,12 @@
 
     <color name="green">#6AB04A</color>
     <color name="blue">#6A89CC</color>
-    <color name="lightyellow">#F0DF87</color>
+    <color name="light_yellow">#F0DF87</color>
     <color name="violet">#30336B</color>
 
-    <color name="lightgreen">#A3CB37</color>
-    <color name="lightgrey">#DAE0E2</color>
-    <color name="lightBlack">#FF000222</color>
+    <color name="light_green">#A3CB37</color>
+    <color name="light_grey">#DAE0E2</color>
+    <color name="light_black">#FF000222</color>
     <color name="orange">#FF8c00</color>
 
 </resources>
