@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "213465510695",
+    "project_id": "my-notes-rs52",
+    "storage_bucket": "my-notes-rs52.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:213465510695:android:67b988dfa425943efe2f02",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWiK12sxkE_5F-mikncjRVt3tACdRcRo4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -13,13 +13,17 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
-            android:name=".NotesEditorActivity"
-            android:theme="@style/Theme.MyApplication.NoActionBar"
-            android:exported="true"/>
-        <activity
             android:name=".MainActivity"
-            android:theme="@style/Base.Theme.MyApplication"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Base.Theme.MyApplication"/>
+        <activity
+            android:name=".NotesEditorActivity"
+            android:exported="true"
+            android:theme="@style/Theme.MyApplication.NoActionBar"/>
+        <activity
+            android:name=".SplashScreen"
+            android:exported="true"
+            android:theme="@style/Theme.MyApplication.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,4 +31,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>
