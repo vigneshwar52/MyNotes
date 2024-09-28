@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     Notes selectedNote;
 
     List<Notes> filterNotesList;
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int NOTESEDITORNEW = 0x01;
     private static final int NOTESEDITORUPDATE = 0x02;
@@ -138,8 +140,9 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
         @Override
         public void onLongClick(Notes notes, CardView cardView) {
-            selectedNote = new Notes();
+            //selectedNote = new Notes();
             selectedNote = notes;
+            selectedNote.setPinned(!selectedNote.isPinned());
             showPopup(cardView);
         }
     };
@@ -154,11 +157,14 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     @Override
     public boolean onMenuItemClick(MenuItem item) {
       if(item.getItemId() == R.id.pin){
+          Log.d(TAG, "onMenuItemClick: isPinned : "+selectedNote.isPinned());
                 if (selectedNote.isPinned()) {
                     database.mainDAObj().pin(selectedNote.getID(), false);
+                    Log.d(TAG, "onMenuItemClick: ispinned reached if block");
                     Toast.makeText(MainActivity.this, "unpinned!", Toast.LENGTH_SHORT).show();
                 } else {
                     database.mainDAObj().pin(selectedNote.getID(), true);
+                    Log.d(TAG, "onMenuItemClick: ispinned reached else block");
                     Toast.makeText(MainActivity.this, "pinned!", Toast.LENGTH_SHORT).show();
                 }
                 notesList.clear();
