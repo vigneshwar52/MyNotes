@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,8 @@ import com.example.myapplication.Adapters.NotesListAdapter;
 import com.example.myapplication.Database.RoomDB;
 import com.example.myapplication.Models.Notes;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,24 +34,18 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     FloatingActionButton fab;
     SearchView searchView;
     Notes selectedNote;
-
+    ImageButton menuBtn;
     List<Notes> filterNotesList;
     private static final String TAG = MainActivity.class.getSimpleName();
-
     private static final int NOTESEDITORNEW = 0x01;
     private static final int NOTESEDITORUPDATE = 0x02;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        recyclerView = findViewById(R.id.recyclerHome);
-        fab = findViewById(R.id.fab_btn);
-
-        searchView = findViewById(R.id.searchView);
+        getViews();
 
         database = RoomDB.getInstance(this);
-
         notesList = database.mainDAObj().getAll();
 
         updateRecycler(notesList);
@@ -79,7 +76,40 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 return false;
             }
         });
+        menuBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMenu();
+            }
+        });
     }
+
+    private void getViews() {
+        fab = findViewById(R.id.fab_btn);
+        searchView = findViewById(R.id.searchView);
+        menuBtn = findViewById(R.id.menu_btn);
+        recyclerView = findViewById(R.id.recyclerHome);
+    }
+
+    void showMenu(){
+        android.widget.PopupMenu popupMenu  = new android.widget.PopupMenu(MainActivity.this,menuBtn);
+        popupMenu.getMenu().add("Logout");
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener(new android.widget.PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if(menuItem.getTitle()=="Logout"){
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(MainActivity.this,LoginActivity.class));
+                    finish();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+    }
+
     protected void onResume() {
         updateRecycler(notesList);
         super.onResume();

@@ -12,11 +12,10 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.myapplication.Models.Notes;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,11 +23,11 @@ import java.util.Objects;
 import java.util.Random;
 
 public class NotesEditorActivity extends AppCompatActivity {
-
     EditText editTextTitle,editTextDesc;
     ImageView imageViewSave,imageViewBack;
     Notes notes;
     Boolean isOldNote = false;
+    boolean isEditMode = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,9 +59,11 @@ public class NotesEditorActivity extends AppCompatActivity {
                     Toast.makeText(NotesEditorActivity.this,"please add some Description \n to save this note",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                SimpleDateFormat formatter = new SimpleDateFormat("EEE dd MM yyyy HH:mm:ss a");
+                SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss a");
                 Date date = new Date();
 
+                Random random = new Random();
+                int color = Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256));
 
                 if(!isOldNote){
                     notes = new Notes();
@@ -70,13 +71,9 @@ public class NotesEditorActivity extends AppCompatActivity {
                 notes.setTitle(title);
                 notes.setDescription(desc);
                 notes.setDate(formatter.format(date));
-
-                Random random = new Random();
-                int color = Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256));
                 notes.setColor(color);
 
-
-                //notes.setDate(String.valueOf(date));
+                saveNotesToFirebase(notes);
 
                 Intent intent = new Intent();
                 intent.putExtra("notes",notes);
@@ -92,6 +89,11 @@ public class NotesEditorActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void saveNotesToFirebase(Notes notes) {
+
+    }
+
     protected void onStart() {
         super.onStart();
         Log.d("lifecycle","onStart invoked");
