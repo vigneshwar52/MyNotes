@@ -25,7 +25,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesViewHolder> {
     List<Notes> list;
     NotesOnClickListener listener;
 
-    private String TAG = NotesListAdapter.class.getSimpleName();
+    private final String TAG = NotesListAdapter.class.getSimpleName();
 
     public NotesListAdapter(Context context, List<Notes> list, NotesOnClickListener listener) {
         this.context = context;

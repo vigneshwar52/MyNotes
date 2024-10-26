@@ -2,18 +2,17 @@
     <!-- Base application theme. -->
     <!-- White for dark theme -->
     <color name="notes_editor_btn_color">#FFFFFF</color>
-    <style name="Base.Theme.MyApplication" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-    <!-- Customize your theme here -->
-    <item name="colorPrimary">@color/orange</item>
-    <item name="colorPrimaryDark">@color/orange</item>
-    <item name="colorPrimaryVariant">@color/orange</item>
-    <item name="colorOnPrimary">@color/orange</item>
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <style name="Base.Theme.MyApplication" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/blumine</item>
+        <item name="colorPrimaryDark">@color/blumine</item>
+        <item name="colorPrimaryVariant">@color/blumine</item>
+        <item name="colorOnPrimary">@color/white</item>
     </style>
 
     <style name="Theme.MyApplication.NoActionBar" parent="Theme.MaterialComponents.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/blumine</item>
+        <item name="colorPrimaryDark">@color/blumine</item>
+        <item name="colorPrimaryVariant">@color/blumine</item>
     </style>
 
 </resources>
