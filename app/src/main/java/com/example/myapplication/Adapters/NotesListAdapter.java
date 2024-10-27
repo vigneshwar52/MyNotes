@@ -43,15 +43,12 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesViewHolder> {
     public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
         holder.tvTitle.setText(list.get(position).getTitle());
         holder.tvTitle.setSelected(true);
-
         holder.tvDes.setText(list.get(position).getDescription());
-
         holder.tvDate.setText(list.get(position).getDate());
         holder.tvDate.setSelected(true);
 
         boolean isContainerPinned = list.get(position).isPinned();
         if (isContainerPinned) {
-
             Log.d(TAG, "onBindViewHolder: if : "+ isContainerPinned);
             holder.imgView_pin.setVisibility(View.VISIBLE);
             holder.imgView_pin.setImageResource(R.drawable.pin);
@@ -60,7 +57,6 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesViewHolder> {
             Log.d(TAG, "onBindViewHolder: else : "+ isContainerPinned);
             holder.imgView_pin.setVisibility(View.INVISIBLE);
         }
-
         holder.notesContainer.setCardBackgroundColor(list.get(position).getColor());
 
         holder.notesContainer.setOnClickListener(new View.OnClickListener() {

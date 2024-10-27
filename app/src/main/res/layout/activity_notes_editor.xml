@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".NotesEditorActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -36,7 +37,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:hint="Title"
-    android:textColor="@color/orange"
+    android:textColor="@color/blumine"
     android:padding="8dp"
     android:textSize="25sp"
     android:textStyle="bold"

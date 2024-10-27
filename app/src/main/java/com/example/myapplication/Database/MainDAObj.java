@@ -5,6 +5,7 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.example.myapplication.Models.Notes;
@@ -27,4 +28,7 @@ public interface MainDAObj {
 
     @Query("UPDATE notes SET pinned = :pin WHERE ID = :id")
     void pin(int id,boolean pin);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(List<Notes> notes); // Method to insert a list of notes
 }

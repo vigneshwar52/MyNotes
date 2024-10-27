@@ -5,6 +5,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,7 +23,7 @@ public class Utils {
             return false;
         }
 
-        String regexPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#\\$%^&*(),]).{8,}$";
+        String regexPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*(),]).{8,}$";
         Pattern pattern = Pattern.compile(regexPattern);
         Matcher matcher = pattern.matcher(pwd);
         if (!matcher.matches()) {
@@ -36,5 +41,10 @@ public class Utils {
             progressBar.setVisibility(View.GONE);
             loginBtn.setVisibility(View.VISIBLE);
         }
+    }
+    static CollectionReference getCollectionReferenceForNotes(){
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        return FirebaseFirestore.getInstance().collection("notes")
+                .document(currentUser.getUid()).collection("my_notes");
     }
 }

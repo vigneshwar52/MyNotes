@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
@@ -16,16 +17,21 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import com.example.myapplication.Adapters.NotesListAdapter;
+import com.example.myapplication.Database.MainDAObj;
 import com.example.myapplication.Database.RoomDB;
 import com.example.myapplication.Models.Notes;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
+public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     RecyclerView recyclerView;
     NotesListAdapter notesListAdapter;
@@ -39,22 +45,25 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int NOTESEDITORNEW = 0x01;
     private static final int NOTESEDITORUPDATE = 0x02;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getViews();
 
-        database = RoomDB.getInstance(this);
-        notesList = database.mainDAObj().getAll();
+        fetchNotesFromFirebase();
+//        saveNotesToLocalDB(notesList);
 
+//        database = RoomDB.getInstance(this);
+        notesList = database.mainDAObj().getAll();
         updateRecycler(notesList);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,NotesEditorActivity.class);
-                startActivityForResult(intent,NOTESEDITORNEW);
+                Intent intent = new Intent(MainActivity.this, NotesEditorActivity.class);
+                startActivityForResult(intent, NOTESEDITORNEW);
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -91,16 +100,16 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         recyclerView = findViewById(R.id.recyclerHome);
     }
 
-    void showMenu(){
-        android.widget.PopupMenu popupMenu  = new android.widget.PopupMenu(MainActivity.this,menuBtn);
+    void showMenu() {
+        android.widget.PopupMenu popupMenu = new android.widget.PopupMenu(MainActivity.this, menuBtn);
         popupMenu.getMenu().add("Logout");
         popupMenu.show();
         popupMenu.setOnMenuItemClickListener(new android.widget.PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                if(menuItem.getTitle()=="Logout"){
+                if (menuItem.getTitle() == "Logout") {
                     FirebaseAuth.getInstance().signOut();
-                    startActivity(new Intent(MainActivity.this,LoginActivity.class));
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     finish();
                     return true;
                 }
@@ -109,6 +118,45 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         });
 
     }
+
+    private void fetchNotesFromFirebase() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            return; // Handle user not logged in
+        }
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String userId = currentUser.getUid();
+
+        db.collection("users")
+                .document(userId)
+                .collection("notes")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Notes> notesList = new ArrayList<>();
+                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                        Notes note = document.toObject(Notes.class);
+                        if (note != null) {
+                            notesList.add(note);
+                        }
+                    }
+                    // Now insert this data into your RoomDB
+                    saveNotesToLocalDB(notesList);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firebase", "Error fetching notes", e);
+                });
+    }
+
+    private void saveNotesToLocalDB(List<Notes> notesList) {
+        if (database == null) {
+            database = RoomDB.getInstance(this); // Initialize the database here if null
+        }
+
+        MainDAObj notesDao = database.mainDAObj();
+        notesDao.insertAll(notesList);
+    }
+
 
     protected void onResume() {
         updateRecycler(notesList);
@@ -122,8 +170,8 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     private void filter(String newText) {
         filterNotesList = new ArrayList<>();
-        for(Notes singleNote:notesList){
-            if(singleNote.getTitle().toLowerCase().contains(newText.toLowerCase())||singleNote.getDescription().toLowerCase().contains(newText.toLowerCase())){
+        for (Notes singleNote : notesList) {
+            if (singleNote.getTitle().toLowerCase().contains(newText.toLowerCase()) || singleNote.getDescription().toLowerCase().contains(newText.toLowerCase())) {
                 filterNotesList.add(singleNote);
             }
         }
@@ -134,8 +182,8 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == NOTESEDITORNEW){
-            if(resultCode == Activity.RESULT_OK){
+        if (requestCode == NOTESEDITORNEW) {
+            if (resultCode == Activity.RESULT_OK) {
                 Notes newNotes = (Notes) data.getSerializableExtra("notes");
                 database.mainDAObj().insert(newNotes);
                 //notesList.clear();
@@ -143,10 +191,10 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 notesList.add(newNotes);
             }
         } else if (requestCode == NOTESEDITORUPDATE) {
-            if(resultCode == Activity.RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
                 Notes newNotes = (Notes) data.getSerializableExtra("notes");
                 assert newNotes != null;
-                database.mainDAObj().update(newNotes.getID(),newNotes.getTitle(),newNotes.getDescription());
+                database.mainDAObj().update(newNotes.getID(), newNotes.getTitle(), newNotes.getDescription());
                 notesList.clear();
                 notesList.addAll(database.mainDAObj().getAll());
             }
@@ -157,15 +205,16 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private void updateRecycler(List<Notes> notesList) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
-        notesListAdapter = new NotesListAdapter(this,notesList,notesClickListener);
+        notesListAdapter = new NotesListAdapter(this, notesList, notesClickListener);
         recyclerView.setAdapter(notesListAdapter);
     }
-    private  final NotesOnClickListener notesClickListener = new NotesOnClickListener() {
+
+    private final NotesOnClickListener notesClickListener = new NotesOnClickListener() {
         @Override
         public void onClick(Notes notes) {
-            Intent intent = new Intent(MainActivity.this,NotesEditorActivity.class);
-            intent.putExtra("old_data",notes);
-            startActivityForResult(intent,NOTESEDITORUPDATE);
+            Intent intent = new Intent(MainActivity.this, NotesEditorActivity.class);
+            intent.putExtra("old_data", notes);
+            startActivityForResult(intent, NOTESEDITORUPDATE);
         }
 
         @Override
@@ -178,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     };
 
     private void showPopup(CardView cardView) {
-        PopupMenu popupMenu = new PopupMenu(this,cardView);
+        PopupMenu popupMenu = new PopupMenu(this, cardView);
         popupMenu.setOnMenuItemClickListener(this);
         popupMenu.inflate(R.menu.popup_menu);
         popupMenu.show();
@@ -186,28 +235,51 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-      if(item.getItemId() == R.id.pin){
-          Log.d(TAG, "onMenuItemClick: isPinned : "+selectedNote.isPinned());
-                if (selectedNote.isPinned()) {
-                    database.mainDAObj().pin(selectedNote.getID(), false);
-                    Log.d(TAG, "onMenuItemClick: ispinned reached if block");
-                    Toast.makeText(MainActivity.this, "unpinned!", Toast.LENGTH_SHORT).show();
-                } else {
-                    database.mainDAObj().pin(selectedNote.getID(), true);
-                    Log.d(TAG, "onMenuItemClick: ispinned reached else block");
-                    Toast.makeText(MainActivity.this, "pinned!", Toast.LENGTH_SHORT).show();
-                }
-                notesList.clear();
-                notesList.addAll(database.mainDAObj().getAll());
-                notesListAdapter.notifyDataSetChanged();
-                return true;
-      }
-      else {
-          database.mainDAObj().delete(selectedNote);
-          Toast.makeText(MainActivity.this, "Note Deleted!", Toast.LENGTH_SHORT).show();
-          notesList.remove(selectedNote);
-          notesListAdapter.notifyDataSetChanged();
-          return true;
-      }
+        if (item.getItemId() == R.id.pin) {
+            Log.d(TAG, "onMenuItemClick: isPinned : " + selectedNote.isPinned());
+            if (selectedNote.isPinned()) {
+                database.mainDAObj().pin(selectedNote.getID(), false);
+                Log.d(TAG, "onMenuItemClick: ispinned reached if block");
+                Toast.makeText(MainActivity.this, "unpinned!", Toast.LENGTH_SHORT).show();
+            } else {
+                database.mainDAObj().pin(selectedNote.getID(), true);
+                Log.d(TAG, "onMenuItemClick: ispinned reached else block");
+                Toast.makeText(MainActivity.this, "pinned!", Toast.LENGTH_SHORT).show();
+            }
+            notesList.clear();
+            notesList.addAll(database.mainDAObj().getAll());
+            notesListAdapter.notifyDataSetChanged();
+            return true;
+        } else {
+            database.mainDAObj().delete(selectedNote);
+            Toast.makeText(MainActivity.this, "Note Deleted!", Toast.LENGTH_SHORT).show();
+            deleteNoteFromFirebase(selectedNote);
+            notesList.remove(selectedNote);
+            notesListAdapter.notifyDataSetChanged();
+            return true;
+        }
+    }
+
+    private void deleteNoteFromFirebase(Notes note) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            return; // Handle user not logged in
+        }
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String userId = currentUser.getUid();
+        int noteId = note.getID(); // Assume note has an ID field
+
+        db.collection("users")
+                .document(userId)
+                .collection("notes")
+                .document(String.valueOf(noteId))
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firebase", "Note deleted successfully");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firebase", "Error deleting note", e);
+                });
     }
 }

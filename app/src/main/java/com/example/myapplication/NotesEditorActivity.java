@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.myapplication.Models.Notes;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -91,29 +92,51 @@ public class NotesEditorActivity extends AppCompatActivity {
     }
 
     private void saveNotesToFirebase(Notes notes) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    }
+        // Create a document reference for the note
+        assert currentUser != null;
+        String userId = currentUser.getUid();
+        int noteId = notes.getID();
 
-    protected void onStart() {
-        super.onStart();
-        Log.d("lifecycle","onStart invoked");
-    }
-    protected void onStop() {
-        super.onStop();
-        Log.d("lifecycle","onStop invoked");
-    }
-    protected void onResume() {
+        // Store the note in the user's notes collection
+        db.collection("users")
+                .document(userId)
+                .collection("notes")
+                .document(String.valueOf(noteId))
+                .set(notes)
+                .addOnSuccessListener(aVoid -> {
+                    // Successfully saved note
+                    Log.d("Firebase", "Note saved successfully");
 
-        super.onResume();
-        Log.d("lifecycle","onResume invoked");
-    }
-    protected void onRestart() {
+                    // Fetch the saved note to verify it's stored
+                    db.collection("users")
+                            .document(userId)
+                            .collection("notes")
+                            .document(String.valueOf(noteId))
+                            .get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    Notes savedNote = documentSnapshot.toObject(Notes.class);
+                                    if (savedNote != null) {
+                                        // Print the saved note to the console
+                                        Log.d("Firebase", "Retrieved Note: " + savedNote.getTitle() + ", " + savedNote.getDescription());
+                                    } else {
+                                        Log.d("Firebase", "Saved note is null.");
+                                    }
+                                } else {
+                                    Log.d("Firebase", "No such document exists!");
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("Firebase", "Error fetching note after saving", e);
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    // Failed to save note
+                    Log.e("Firebase", "Error saving note", e);
+                });
 
-        super.onRestart();
-        Log.d("lifecycle","onRestart invoked");
-    }
-    protected void onDestroy() {
-
-        super.onDestroy();Log.d("lifecycle","onDestroy invoked");
     }
 }
