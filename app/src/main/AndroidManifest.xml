@@ -25,7 +25,7 @@
         <activity
             android:name=".NotesEditorActivity"
             android:exported="true"
-            android:theme="@style/Theme.MyApplication.NoActionBar"/>
+            android:theme="@style/Base.Theme.MyApplication" />
         <activity
             android:name=".SplashScreen"
             android:exported="true">

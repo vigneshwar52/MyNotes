@@ -53,9 +53,8 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         getViews();
 
         fetchNotesFromFirebase();
-//        saveNotesToLocalDB(notesList);
 
-//        database = RoomDB.getInstance(this);
+        database = RoomDB.getInstance(this);
         notesList = database.mainDAObj().getAll();
         updateRecycler(notesList);
 
