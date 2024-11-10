@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase;
 import com.example.myapplication.Models.Notes;
 
 @Database(entities =
-        Notes.class,
+        {Notes.class},
         version =2,
         exportSchema = false)
 

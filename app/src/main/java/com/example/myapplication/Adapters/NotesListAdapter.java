@@ -51,13 +51,12 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesViewHolder> {
 
         boolean isContainerPinned = list.get(position).isPinned();
         if (isContainerPinned) {
-
-            Log.d(TAG, "onBindViewHolder: if : "+ isContainerPinned);
+            Log.d(TAG, "onBindViewHolder: if : "+ true);
             holder.imgView_pin.setVisibility(View.VISIBLE);
             holder.imgView_pin.setImageResource(R.drawable.pin);
         }
         else{
-            Log.d(TAG, "onBindViewHolder: else : "+ isContainerPinned);
+            Log.d(TAG, "onBindViewHolder: else : "+ false);
             holder.imgView_pin.setVisibility(View.INVISIBLE);
         }
 

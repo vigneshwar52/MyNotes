@@ -9,6 +9,7 @@ import java.io.Serializable;
 public class Notes implements Serializable {
     @PrimaryKey(autoGenerate = true)
     int ID = 0;
+    private String firebaseID;
 
     @ColumnInfo()
     String title = "";
@@ -21,7 +22,6 @@ public class Notes implements Serializable {
     private int color;
 
     public Notes() {
-
    }
     public Notes(int ID, String title, String description, String date, boolean pinned, int color) {
         this.ID = ID;
@@ -78,5 +78,13 @@ public class Notes implements Serializable {
 
     public void setPinned(boolean pinned) {
         this.pinned = pinned;
+    }
+
+    public String getFirebaseID() {
+        return firebaseID;
+    }
+
+    public void setFirebaseID(String firebaseID) {
+        this.firebaseID = firebaseID;
     }
 }

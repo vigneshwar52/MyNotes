@@ -26,8 +26,8 @@ public class NotesEditorActivity extends AppCompatActivity {
     EditText editTextTitle,editTextDesc;
     ImageView imageViewSave,imageViewBack;
     Notes notes;
-    Boolean isOldNote = false;
     boolean isEditMode = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,10 +39,10 @@ public class NotesEditorActivity extends AppCompatActivity {
 
         notes = new Notes();
         try {
-            notes = (Notes) getIntent().getSerializableExtra("old_data");
+            notes = (Notes) getIntent().getSerializableExtra("edit_notes");
             editTextTitle.setText(notes.getTitle());
             editTextDesc.setText(notes.getDescription());
-            isOldNote = true;
+            isEditMode = true;
         }catch (Exception e){
             Log.e("Exception in Notes Editor = ", Objects.requireNonNull(e.getMessage()));
         }
@@ -62,7 +62,7 @@ public class NotesEditorActivity extends AppCompatActivity {
                 Random random = new Random();
                 int color = Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256));
 
-                if(!isOldNote){
+                if(!isEditMode){
                     notes = new Notes();
                 }
                 notes.setTitle(title);
@@ -70,7 +70,7 @@ public class NotesEditorActivity extends AppCompatActivity {
                 notes.setDate(formatter.format(date));
                 notes.setColor(color);
 
-                saveNotesToFirebase(notes);
+//                saveNotesToFirebase(notes);
 
                 Intent intent = new Intent();
                 intent.putExtra("notes",notes);

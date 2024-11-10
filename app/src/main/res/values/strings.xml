@@ -12,4 +12,6 @@
     <string name="click_here">Click Here</string>
     <string name="let_s_get_started">Let\'s get started</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="add_notes_description">Add Notes Description</string>
+    <string name="title">Title</string>
 </resources>

@@ -2,12 +2,15 @@ package com.example.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
@@ -20,7 +23,11 @@ import com.example.myapplication.Adapters.NotesListAdapter;
 import com.example.myapplication.Database.RoomDB;
 import com.example.myapplication.Models.Notes;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,24 +44,30 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     ImageButton menuBtn;
     List<Notes> filterNotesList;
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final int NOTESEDITORNEW = 0x01;
-    private static final int NOTESEDITORUPDATE = 0x02;
+    private static final int NOTES_NEW = 0x01;
+    private static final int NOTES_UPDATE = 0x02;
+    SharedPreferences sharedPrefs;String userType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_main);
         getViews();
+        sharedPrefs = getSharedPreferences("user_prefs",MODE_PRIVATE);
+        userType = sharedPrefs.getString("user_type", "local");
 
-        database = RoomDB.getInstance(this);
-        notesList = database.mainDAObj().getAll();
-
-        updateRecycler(notesList);
+        if (userType.equals("remote")) {
+            loadNotesFromFirebase();
+        } else {
+            loadNotesFromRoom();
+        }
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,NotesEditorActivity.class);
-                startActivityForResult(intent,NOTESEDITORNEW);
+                startActivityForResult(intent,NOTES_NEW);
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -82,6 +95,33 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 showMenu();
             }
         });
+    }
+
+    private void loadNotesFromFirebase() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("users").document(currentUser.getUid()).collection("notes")
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            notesList.clear();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Notes note = document.toObject(Notes.class);
+                                notesList.add(note);
+                            }
+                            updateRecycler(notesList);
+                        } else {
+                            Log.e(TAG, "Error getting documents: ", task.getException());
+                        }
+                    });
+        }
+    }
+
+    private void loadNotesFromRoom() {
+        database = RoomDB.getInstance(this);
+        notesList = database.mainDAObj().getAll();
+        updateRecycler(notesList);
     }
 
     private void getViews() {
@@ -133,39 +173,101 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == NOTESEDITORNEW){
-            if(resultCode == Activity.RESULT_OK){
-                Notes newNotes = (Notes) data.getSerializableExtra("notes");
-                database.mainDAObj().insert(newNotes);
-                //notesList.clear();
-                //notesList.addAll(database.mainDAObj().getAll());
-                notesList.add(newNotes);
-            }
-        } else if (requestCode == NOTESEDITORUPDATE) {
-            if(resultCode == Activity.RESULT_OK) {
-                Notes newNotes = (Notes) data.getSerializableExtra("notes");
-                assert newNotes != null;
-                database.mainDAObj().update(newNotes.getID(),newNotes.getTitle(),newNotes.getDescription());
-                notesList.clear();
-                notesList.addAll(database.mainDAObj().getAll());
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            // Get the updated or new note from NotesEditorActivity
+            Notes note = (Notes) data.getSerializableExtra("notes");
+            if (note == null) return;
+            if (requestCode == NOTES_NEW) {
+                if (userType.equals("local")) {
+                    saveNoteToRoom(note);
+                } else if (userType.equals("firebase")) {
+                    saveNoteToFirebase(note);
+                }
+            } else if (requestCode == NOTES_UPDATE) {
+                if (userType.equals("local")) {
+                    updateNoteToRoom(note);
+                } else if (userType.equals("firebase")) {
+                    updateNoteToFirebase(note);
+                }
             }
         }
         notesListAdapter.notifyDataSetChanged();
     }
+
+    private void updateNoteToFirebase(Notes note) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentUser!=null && note.getFirebaseID()!=null){
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            db.collection("users").document(currentUser.getUid()).collection("notes")
+                    .document(note.getFirebaseID())
+                    .set(note)
+                    .addOnSuccessListener(aVoid -> {
+                        int index = getNoteIndexByFirebaseId(note.getFirebaseID());
+                        if (index != -1) {
+                            notesList.set(index, note);
+                            notesListAdapter.notifyDataSetChanged();
+                        }
+                        Toast.makeText(this, "Note updated in Firebase", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> Log.e(TAG, "Error updating note in Firebase", e));
+        }
+    }
+
+    private int getNoteIndexByFirebaseId(String firebaseID) {
+        for (int i = 0; i < notesList.size(); i++) {
+            if (firebaseID.equals(notesList.get(i).getFirebaseID())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void saveNoteToFirebase(Notes note) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentUser!=null){
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("users").document(currentUser.getUid()).collection("notes")
+                    .add(note)
+                    .addOnSuccessListener(documentReference -> {
+                        note.setFirebaseID(documentReference.getId());
+                        notesList.add(note);
+                        notesListAdapter.notifyDataSetChanged();
+                        Toast.makeText(this, "Note saved to Firebase", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e-> Log.e(TAG, "Error adding note to Firebase", e));
+        }
+    }
+
+    private void saveNoteToRoom(Notes note) {
+        database.mainDAObj().insert(note);
+        //notesList.clear();
+        //notesList.addAll(database.mainDAObj().getAll());
+        notesList.add(note);
+        Toast.makeText(MainActivity.this, "Note Created Successfully!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateNoteToRoom(Notes note) {
+        database.mainDAObj().update(note.getID(),note.getTitle(),note.getDescription());
+        notesList.clear();
+        notesList.addAll(database.mainDAObj().getAll());
+        notesListAdapter.notifyDataSetChanged();
+        Toast.makeText(this, "Note updated locally", Toast.LENGTH_SHORT).show();    }
 
     private void updateRecycler(List<Notes> notesList) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
         notesListAdapter = new NotesListAdapter(this,notesList,notesClickListener);
         recyclerView.setAdapter(notesListAdapter);
+        Toast.makeText(this, "Note saved locally", Toast.LENGTH_SHORT).show();
     }
+
     private  final NotesOnClickListener notesClickListener = new NotesOnClickListener() {
         @Override
         public void onClick(Notes notes) {
             Intent intent = new Intent(MainActivity.this,NotesEditorActivity.class);
-            intent.putExtra("old_data",notes);
-            startActivityForResult(intent,NOTESEDITORUPDATE);
+            intent.putExtra("edit_notes",notes);
+            startActivityForResult(intent,NOTES_UPDATE);
         }
 
         @Override

@@ -40,6 +40,7 @@ dependencies {
     androidTestImplementation libs.espresso.core
     implementation platform(libs.firebase.bom)
     implementation libs.firebase.database
+    implementation libs.firebase.firestore
 
     def room_version = "2.6.1"
     implementation libs.room.runtime
