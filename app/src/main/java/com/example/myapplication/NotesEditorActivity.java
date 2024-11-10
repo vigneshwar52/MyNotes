@@ -35,10 +35,7 @@ public class NotesEditorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notes_editor);
         Log.d("lifecycle","onCreate invoked");
 
-        imageViewSave = findViewById(R.id.imgView_save);
-        editTextTitle = findViewById(R.id.editTextTitle);
-        editTextDesc = findViewById(R.id.editTextDesc);
-        imageViewBack = findViewById(R.id.imgView_back);
+        getViews();
 
         notes = new Notes();
         try {
@@ -88,6 +85,13 @@ public class NotesEditorActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void getViews() {
+        imageViewSave = findViewById(R.id.imgView_save);
+        editTextTitle = findViewById(R.id.editTextTitle);
+        editTextDesc = findViewById(R.id.editTextDesc);
+        imageViewBack = findViewById(R.id.imgView_back);
     }
 
     private void saveNotesToFirebase(Notes notes) {

@@ -8,11 +8,42 @@
     tools:context=".MainActivity"
     android:fitsSystemWindows="true">
 
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      android:background="@color/blumine"
+      android:id="@+id/title_bar_layout">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/page_title"
+        android:text="@string/app_name"
+        android:layout_marginStart="20dp"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <ImageButton
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:id="@+id/menu_btn"
+        android:src="@drawable/ic_menu"
+        android:pointerIcon="context_menu"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        app:tint="@color/white"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        />
+  </RelativeLayout>
+
   <androidx.appcompat.widget.SearchView
       android:id="@+id/searchView"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/title_bar_layout"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       android:background="@drawable/circular_search_view_background"
@@ -35,7 +66,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:backgroundTint="@color/orange"
+      android:backgroundTint="@color/blumine"
       app:layout_constraintBottom_toBottomOf="parent"
       android:src="@drawable/ic_add"
       android:padding="10dp"

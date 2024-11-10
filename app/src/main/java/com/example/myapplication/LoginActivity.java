@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -26,7 +27,10 @@ public class LoginActivity extends AppCompatActivity {
     EditText emailEditText,pwdEditText;
     Button loginBtn;
     ProgressBar progressBar;
-    TextView createAccountBtnTextView;
+    TextView createAccountBtnTextView,connectToRoom;
+    SharedPreferences sharedPreferences;SharedPreferences.Editor editor;
+    String local = "local";
+    String remote = "remote";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +38,9 @@ public class LoginActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
-        emailEditText = findViewById(R.id.email_edit_text);
-        pwdEditText = findViewById(R.id.password_edit_text);
-        loginBtn = findViewById(R.id.login_btn);
-        progressBar = findViewById(R.id.progress_bar);
-        createAccountBtnTextView = findViewById(R.id.create_account_text_view_btn);
+        getViews();
+        sharedPreferences = getSharedPreferences("user_prefs",MODE_PRIVATE);
+        editor = sharedPreferences.edit();
 
         loginBtn.setOnClickListener(v -> {
             proceedToLogin();
@@ -46,9 +48,26 @@ public class LoginActivity extends AppCompatActivity {
         createAccountBtnTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                editor.putString("user_type",remote);
                 startActivity(new Intent(LoginActivity.this,UserRegistration.class));
             }
         });
+        connectToRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editor.putString("user_type",local);
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            }
+        });
+    }
+
+    private void getViews() {
+        emailEditText = findViewById(R.id.email_edit_text);
+        pwdEditText = findViewById(R.id.password_edit_text);
+        loginBtn = findViewById(R.id.login_btn);
+        progressBar = findViewById(R.id.progress_bar);
+        createAccountBtnTextView = findViewById(R.id.create_account_text_view_btn);
+        connectToRoom = findViewById(R.id.connectToRoom);
     }
 
     private void proceedToLogin() {
