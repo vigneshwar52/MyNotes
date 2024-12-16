@@ -1,4 +1,4 @@
-package com.example.myapplication.Adapters;
+package com.application.MyNotes.Adapters;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,9 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.Models.Notes;
-import com.example.myapplication.NotesOnClickListener;
-import com.example.myapplication.R;
+import com.application.MyNotes.Models.Notes;
+import com.application.MyNotes.NotesOnClickListener;
+import com.application.MyNotes.R;
 
 import java.util.ArrayList;
 import java.util.List;

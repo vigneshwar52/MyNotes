@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.application.MyNotes;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,9 +13,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.Models.Notes;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.application.MyNotes.Models.Notes;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

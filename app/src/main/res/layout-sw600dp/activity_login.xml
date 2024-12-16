@@ -28,30 +28,16 @@
             android:layout_marginVertical="32dp"
             android:id="@+id/login_icon"
             android:contentDescription="@string/profilelogo"
-            android:src="@drawable/login"/>
+            android:src="@drawable/login"
+            app:tint="@color/imageColorPrimary" />
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/hello_text"
-            android:orientation="vertical">
+            android:text="@string/welcome_back"
+            android:textStyle="bold"
+            android:textSize="36sp"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/hi"
-                android:textStyle="bold"
-                android:textSize="32sp"
-                android:textColor="@color/black"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/welcome_back"
-                android:textStyle="bold"
-                android:textSize="36sp"
-                android:textColor="@color/black"/>
-        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

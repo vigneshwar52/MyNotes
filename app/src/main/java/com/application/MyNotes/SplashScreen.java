@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.application.MyNotes;
 
 import android.content.Intent;
 import android.os.Bundle;

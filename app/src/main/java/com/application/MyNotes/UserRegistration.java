@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.application.MyNotes;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -9,7 +9,8 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.myapplication.Utils.Utils;
+
+import com.application.MyNotes.Utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

@@ -1,11 +1,14 @@
-package com.example.myapplication;
+package com.application.MyNotes;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,7 +17,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.Utils.Utils;
+import com.application.MyNotes.Utils.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -27,10 +30,11 @@ public class LoginActivity extends AppCompatActivity {
     EditText emailEditText,pwdEditText;
     Button loginBtn;
     ProgressBar progressBar;
-    TextView createAccountBtnTextView,connectToRoom;
+    TextView createAccountBtnTextView,connectToRoom,txtView;
     SharedPreferences sharedPreferences;SharedPreferences.Editor editor;
     String local = "local";
     String remote = "remote";
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         getViews();
+        int color = getResources().getColor(R.color.white, getTheme());
+//        imageView.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+
         sharedPreferences = getSharedPreferences("user_prefs",MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
@@ -68,6 +75,8 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
         createAccountBtnTextView = findViewById(R.id.create_account_text_view_btn);
         connectToRoom = findViewById(R.id.connectToRoom);
+        imageView = findViewById(R.id.login_icon);
+        txtView = findViewById(R.id.welcome_txt);
     }
 
     private void proceedToLogin() {

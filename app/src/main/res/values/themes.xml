@@ -2,6 +2,7 @@
     <!-- Base application theme. -->
     <!-- Black for light theme -->
     <color name="notes_editor_btn_color">#000000</color>
+    <color name="imageColorPrimary">#000000</color>
     <style name="Base.Theme.MyApplication" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/blumine</item>
         <item name="colorPrimaryDark">@color/blumine</item>

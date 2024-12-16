@@ -1,4 +1,4 @@
-package com.example.myapplication.Database;
+package com.application.MyNotes.Database;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 
@@ -7,7 +7,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.example.myapplication.Models.Notes;
+import com.application.MyNotes.Models.Notes;
 
 import java.util.List;
 

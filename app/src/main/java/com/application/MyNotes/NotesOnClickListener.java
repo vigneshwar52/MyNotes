@@ -1,8 +1,8 @@
-package com.example.myapplication;
+package com.application.MyNotes;
 
 import androidx.cardview.widget.CardView;
 
-import com.example.myapplication.Models.Notes;
+import com.application.MyNotes.Models.Notes;
 
 public interface NotesOnClickListener {
     void onClick(Notes notes);

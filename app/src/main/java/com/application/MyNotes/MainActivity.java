@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.application.MyNotes;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,9 +16,10 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import com.example.myapplication.Adapters.NotesListAdapter;
-import com.example.myapplication.Database.RoomDB;
-import com.example.myapplication.Models.Notes;
+
+import com.application.MyNotes.Adapters.NotesListAdapter;
+import com.application.MyNotes.Database.RoomDB;
+import com.application.MyNotes.Models.Notes;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         setContentView(R.layout.activity_main);
         getViews();
 
-        database = RoomDB.getInstance(this);
+        database = com.application.MyNotes.Database.RoomDB.getInstance(this);
         notesList = database.mainDAObj().getAll();
 
         updateRecycler(notesList);

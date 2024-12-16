@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">My Notes</string>
-    <string name="welcome_back">Welcome Back</string>
-    <string name="hi">Hi.</string>
+    <string name="welcome_back">Hi, Welcome Back</string>
     <string name="profilelogo">profileLogo</string>
     <string name="email_id">Email Id</string>
     <string name="password">Password</string>
@@ -10,6 +9,6 @@
     <string name="saveDataLocally">To Store Notes Locally?</string>
     <string name="create_account">Create Account</string>
     <string name="click_here">Click Here</string>
-    <string name="let_s_get_started">Let\'s get started</string>
+    <string name="let_s_get_started">Hi, Let\'s get started</string>
     <string name="confirm_password">Confirm Password</string>
 </resources>
