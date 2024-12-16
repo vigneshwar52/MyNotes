@@ -65,6 +65,14 @@
                 android:background="@drawable/rounded_corner"
                 android:padding="16dp"
                 android:layout_marginTop="12dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold|italic"
+                android:textColor="@color/blue"
+                android:id="@+id/forgotPwd"
+                android:text="@string/forgot_pwd"
+                android:textAlignment="viewEnd"/>
             <com.google.android.material.button.MaterialButton
                 android:layout_width="match_parent"
                 android:id="@+id/login_btn"

@@ -9,6 +9,7 @@
     <string name="saveDataLocally">To Store Notes Locally?</string>
     <string name="create_account">Create Account</string>
     <string name="click_here">Click Here</string>
+    <string name="forgot_pwd">Forgot Password?</string>
     <string name="let_s_get_started">Hi, Let\'s get started</string>
     <string name="confirm_password">Confirm Password</string>
 </resources>
